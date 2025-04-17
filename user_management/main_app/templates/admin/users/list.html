@@ -1,0 +1,78 @@
+{% extends "account/_base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="px-4 sm:px-6 lg:px-8">
+    {% include "components/header.html" with title="User Management" %}
+    
+    <div class="mt-8 flow-root">
+        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Search users..." 
+                            class="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div class="absolute left-3 top-2.5 text-gray-400">
+                            <i class="fas fa-search"></i>
+                        </div>
+                    </div>
+                    <a href="{% url 'register' %}" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Add User
+                    </a>
+                </div>
+                
+                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="border border-gray-300 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                                <th scope="col" class="border border-gray-300 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
+                                <th scope="col" class="border border-gray-300 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Phone Number</th>
+                                <th scope="col" class="border border-gray-300 px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                                <th scope="col" class="border border-gray-300 relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                    <span class="">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white" id="userTableBody">
+                            <!-- Users will be loaded here via JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Actions Modal -->
+{% include "components/modal.html" with id="userActionsModal" %}
+
+<!-- User Role Modal -->
+<div id="userRoleModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-30">
+  <div class="flex items-center justify-center min-h-screen px-4">
+    <div class="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 relative">
+      <h2 class="text-xl font-semibold mb-4">Manage Roles for User</h2>
+
+      <form id="userRoleForm">
+        {% csrf_token %}
+        <input type="hidden" id="userRoleUserId" name="user_id">
+
+        <div class="space-y-2 max-h-64 overflow-y-auto" id="rolesList">
+          <!-- Roles checkboxes will be loaded here via JS -->
+        </div>
+
+        <div class="mt-6 flex justify-end space-x-2">
+          <button type="button" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+            onclick="closeUserRoleModal()">Cancel</button>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Save
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'js/users.js' %}"></script>
+{% endblock %}

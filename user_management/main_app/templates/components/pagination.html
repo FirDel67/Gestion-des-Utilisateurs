@@ -1,0 +1,51 @@
+{% if page_obj.has_other_pages %}
+<nav class="flex items-center justify-between border-t border-gray-200 px-4 py-3 sm:px-6 mt-4">
+    <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+        <div>
+            <p class="text-sm text-gray-700">
+                Showing <span class="font-medium">{{ page_obj.start_index }}</span>
+                to <span class="font-medium">{{ page_obj.end_index }}</span>
+                of <span class="font-medium">{{ page_obj.paginator.count }}</span> results
+            </p>
+        </div>
+        <div>
+            <ul class="flex space-x-2">
+                {% if page_obj.has_previous %}
+                <li>
+                    <a href="?page={{ page_obj.previous_page_number }}" 
+                        class="px-3 py-1 border rounded-md text-sm font-medium hover:bg-gray-50">
+                        Previous
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li>
+                        <span class="px-3 py-1 border border-blue-500 bg-blue-50 text-blue-600 rounded-md text-sm font-medium">
+                            {{ num }}
+                        </span>
+                    </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li>
+                        <a href="?page={{ num }}" 
+                            class="px-3 py-1 border rounded-md text-sm font-medium hover:bg-gray-50">
+                            {{ num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li>
+                    <a href="?page={{ page_obj.next_page_number }}" 
+                        class="px-3 py-1 border rounded-md text-sm font-medium hover:bg-gray-50">
+                        Next
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endif %}

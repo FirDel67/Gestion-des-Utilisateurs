@@ -1,0 +1,56 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}User Management{% endblock %}</title>
+    <script src="{% static 'css/tailwind.min.css' %}"></script>
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/sweetalert2.min.css' %}">
+    <script src="{% static "js/sweetalert2@11.js" %}"></script>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"  crossorigin="anonymous">
+</head>
+
+<body class="bg-gray-50" x-data="{ mobileMenuOpen: false }">
+    <!-- Mobile sidebar backdrop (hidden on desktop) -->
+    <div x-show="mobileMenuOpen" class="md:hidden fixed inset-0 z-30 bg-gray-600 bg-opacity-75" 
+         @click="mobileMenuOpen = false" x-transition.opacity></div>
+
+    <div class="min-h-screen flex flex-col">
+        
+        <div class="flex flex-1">
+            <!-- Include sidebar component -->
+            {% include "components/sidebar.html" %}
+
+            <!-- Main content area -->
+            <main class="flex-1 pb-8 md:ml-64">
+                <!-- Content wrapper with padding -->
+                <div class="px-4 sm:px-6 lg:px-8 py-6">
+                    {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} px-6 py-4 rounded-lg shadow-md">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% block content %}{% endblock %}
+                </div>
+            </main>
+        </div>
+
+        {% comment %} <!-- Include footer component --> {% endcomment %}
+        {% comment %} {% include "components/footer.html" %} {% endcomment %}
+    </div>
+
+    {% comment %} <script src="{% static 'js/main.js' %}"></script> {% endcomment %}
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+{% extends "account/_base.html" %}
+{% load static %}
+
+{% block content %}
+<button onclick="window.history.back();" class="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700">
+    Go Back
+</button>
+
+{% include "components/header.html" with title="User Details" %}
+    
+<div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8 bg-white shadow-md rounded-lg">
+    <input type="hidden" id="userId" value="{{user_id}}">
+
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800" id="userName">User Detail</h1>
+        <p class="text-sm text-gray-500" id="userEmail">email@example.com</p>
+    </div>
+
+    <div class="mb-6">
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">Profile</h2>
+        <div class="flex items-center space-x-4">
+            <img id="userProfileImage" src="{% static 'img/logo.jpg' %}" class="w-16 h-16 rounded-full border border-gray-300" alt="Profile">
+            <div>
+                <p id="userPhone" class="font-medium text-gray-800">Phone: </p>
+                <p id="userStatus">Status: --</p>
+                <p id="userJoined" class="text-sm ext-gray-500">Joined at:</p>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <h2 class="text-xl font-semibold text-gray-700 mb-4">Roles & Permissions</h2>
+        <div id="userRolesContainer" class="space-y-4">
+            <!-- JS will populate roles here -->
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/user_details.js' %}"></script>
+{% endblock %}

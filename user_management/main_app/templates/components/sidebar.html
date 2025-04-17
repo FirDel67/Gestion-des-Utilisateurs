@@ -1,0 +1,101 @@
+{% load static %}
+
+<!-- Desktop Sidebar -->
+<div class="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+    <!-- Sidebar component -->
+    <div class="flex flex-col flex-grow border-r border-gray-200 pt-5 bg-white overflow-y-auto">
+        <!-- Logo -->
+        <div class="flex items-center justify-center flex-shrink-0 px-4 rounded-full">
+            <a href="{% url 'user_list' %}">
+                <img class="h-24 w-auto rounded-full" src="{% static 'img/logo.jpg' %}" alt="User Management">
+            </a>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="mt-5 flex-grow flex flex-col">
+            <nav class="flex-1 px-2 pb-4 space-y-1">
+                <!-- User Management -->
+                <div x-data="{ open: {% if 'users' in request.path or 'roles' in request.path or 'permissions' in request.path %}true{% else %}false{% endif %} }">
+                    <div class="group w-full flex items-center px-2 py-2 text-sm font-medium rounded-md {% if 'users' in request.path or 'roles' in request.path or 'permissions' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                        <i class="fas fa-users mr-3 flex-shrink-0 {% if 'users' in request.path or 'roles' in request.path or 'permissions' in request.path %}text-gray-500{% else %}text-gray-400 group-hover:text-gray-500{% endif %}"></i>
+                        <span class="flex-1 text-left">User Management</span>
+                    </div>
+                    
+                    <div class="pl-11 mt-1 space-y-1">
+                        <a href="{% url 'user_list' %}" 
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if 'users' in request.path and 'roles' not in request.path and 'permissions' not in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <i class="fas fa-user mr-2 text-xs"></i>
+                            Users
+                        </a>
+                        <a href="{% url 'role_list_view' %}" 
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if 'roles' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <i class="fas fa-user-tag mr-2 text-xs"></i>
+                            Roles
+                        </a>
+                        <a href="{% url 'permission_list' %}" 
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if 'permissions' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <i class="fas fa-key mr-2 text-xs"></i>
+                            Permissions
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Sidebar -->
+<div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200" 
+     x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" 
+     x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" 
+     x-transition:leave-end="opacity-0 scale-95" 
+     class="md:hidden fixed inset-0 z-40">
+    <div class="fixed inset-0 bg-gray-600 bg-opacity-75" @click="mobileMenuOpen = false"></div>
+    <div class="relative flex flex-col w-full max-w-xs bg-white pt-5 pb-4">
+        <div class="absolute top-0 right-0 -mr-12 pt-2">
+            <button type="button" class="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" 
+                    @click="mobileMenuOpen = false">
+                <span class="sr-only">Close sidebar</span>
+                <i class="fas fa-times text-white"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Logo -->
+        <div class="flex-shrink-0 flex items-center px-4 rounded-full">
+            <img class="h-8 w-auto rounded-full" src="{% static 'img/logo.jpg' %}" alt="User Management">
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mt-5 flex-1 h-0 overflow-y-auto">
+            <nav class="px-2 space-y-1">
+                <div x-data="{ open: false }">
+                    <button @click="open = !open" 
+                            class="group w-full flex items-center px-2 py-2 text-base font-medium rounded-md {% if 'users' in request.path or 'roles' in request.path or 'permissions' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                        <i class="fas fa-users mr-4 flex-shrink-0 {% if 'users' in request.path or 'roles' in request.path or 'permissions' in request.path %}text-gray-500{% else %}text-gray-400 group-hover:text-gray-500{% endif %}"></i>
+                        <span class="flex-1 text-left">User Management</span>
+                        <i class="fas fa-chevron-down ml-1 flex-shrink-0 text-gray-400 text-xs transform transition" 
+                           :class="{ 'rotate-180': open }"></i>
+                    </button>
+                    
+                    <div x-show="open" class="pl-11 mt-1 space-y-1">
+                        <a href="{% url 'user_list' %}" 
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if 'users' in request.path and 'roles' not in request.path and 'permissions' not in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <i class="fas fa-user mr-2 text-xs"></i>
+                            Users
+                        </a>
+                        <a href="{% url 'role_list_view' %}" 
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if 'roles' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <i class="fas fa-user-tag mr-2 text-xs"></i>
+                            Roles
+                        </a>
+                        <a href="{% url 'permission_list' %}" 
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {% if 'permissions' in request.path %}bg-gray-100 text-gray-900{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <i class="fas fa-key mr-2 text-xs"></i>
+                            Permissions
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>

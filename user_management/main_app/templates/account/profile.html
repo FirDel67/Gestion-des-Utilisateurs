@@ -1,0 +1,204 @@
+{% extends "account/_base.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <!-- Profile Header -->
+        <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <img class="h-24 w-24 rounded-full border-4 border-white shadow-md" 
+                             src="{{ user.avatar_url|default:'/static/images/default-avatar.png' }}" 
+                             alt="Profile picture">
+                        <label for="avatar-upload" class="absolute bottom-0 right-0 bg-white p-2 rounded-full shadow-md cursor-pointer hover:bg-gray-100">
+                            <i class="fas fa-camera text-blue-600"></i>
+                            <input id="avatar-upload" type="file" class="hidden" accept="image/*">
+                        </label>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">{{ user.get_full_name }}</h1>
+                        <p class="opacity-90">{{ user.email }}</p>
+                        <div class="flex space-x-2 mt-2">
+                            {% for role in user.roles.all %}
+                            <span class="px-2 py-1 rounded-full text-xs font-semibold bg-white bg-opacity-20">
+                                {{ role.name }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <span class="text-xs opacity-80">Member since</span>
+                    <p class="font-medium">{{ user.date_joined|date:"F Y" }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Tabs -->
+        <div class="border-b border-gray-200">
+            <nav class="flex -mb-px">
+                <button id="profile-tab" class="tab-button active" data-tab="profile">
+                    <i class="fas fa-user mr-2"></i> Profile
+                </button>
+                <button id="security-tab" class="tab-button" data-tab="security">
+                    <i class="fas fa-lock mr-2"></i> Security
+                </button>
+                <button id="activity-tab" class="tab-button" data-tab="activity">
+                    <i class="fas fa-history mr-2"></i> Activity
+                </button>
+                {% if is_admin %}
+                <button id="admin-tab" class="tab-button" data-tab="admin">
+                    <i class="fas fa-shield-alt mr-2"></i> Admin
+                </button>
+                {% endif %}
+            </nav>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="p-6">
+            <!-- Profile Tab -->
+            <div id="profile-content" class="tab-content active">
+                <form id="profileForm" class="space-y-6">
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                        <div>
+                            <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
+                            <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="last_name" class="block text-sm font-medium text-gray-700">Last Name</label>
+                            <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" id="email" name="email" value="{{ user.email }}"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
+                            <input type="tel" id="phone" name="phone" value="{{ user.phone|default:'' }}"
+                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div class="flex justify-end">
+                        <button type="submit"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Security Tab -->
+            <div id="security-content" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                        <h3 class="text-lg font-medium text-blue-800 mb-2">Change Password</h3>
+                        <form id="passwordForm" class="space-y-4">
+                            <div>
+                                <label for="current_password" class="block text-sm font-medium text-gray-700">Current Password</label>
+                                <input type="password" id="current_password" name="current_password" required
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label for="new_password" class="block text-sm font-medium text-gray-700">New Password</label>
+                                <input type="password" id="new_password" name="new_password" required
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                <p class="mt-1 text-xs text-gray-500">Minimum 8 characters with at least one number and one special character</p>
+                            </div>
+                            <div>
+                                <label for="confirm_password" class="block text-sm font-medium text-gray-700">Confirm New Password</label>
+                                <input type="password" id="confirm_password" name="confirm_password" required
+                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit"
+                                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Two-Factor Authentication</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Add an extra layer of security to your account</p>
+                            </div>
+                            <button id="enable2faBtn"
+                                    class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                Enable 2FA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Tab -->
+            <div id="activity-content" class="tab-content hidden">
+                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Event</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">IP Address</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Device</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white" id="activityTable">
+                            <!-- Activity logs will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Admin Tab (visible to admins only) -->
+            {% if is_admin %}
+            <div id="admin-content" class="tab-content hidden">
+                <div class="space-y-6">
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">User Roles</h3>
+                        <div id="userRolesContainer" class="space-y-4">
+                            <!-- Roles will be loaded here -->
+                        </div>
+                        <button id="addRoleBtn"
+                                class="mt-4 inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <i class="fas fa-plus mr-1"></i> Add Role
+                        </button>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Account Status</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Current status: 
+                                    <span class="font-medium {% if user.is_active %}text-green-600{% else %}text-red-600{% endif %}">
+                                        {% if user.is_active %}Active{% else %}Disabled{% endif %}
+                                    </span>
+                                </p>
+                                {% if not user.is_active %}
+                                <p class="text-xs text-gray-500 mt-1">Disabled accounts cannot log in to the system</p>
+                                {% endif %}
+                            </div>
+                            <button id="toggleStatusBtn"
+                                    class="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-md shadow-sm text-white {% if user.is_active %}bg-red-600 hover:bg-red-700{% else %}bg-green-600 hover:bg-green-700{% endif %} focus:outline-none focus:ring-2 focus:ring-offset-2 {% if user.is_active %}focus:ring-red-500{% else %}focus:ring-green-500{% endif %}">
+                                {% if user.is_active %}Disable Account{% else %}Enable Account{% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Role Modal -->
+{% include "components/modal.html" with id="addRoleModal" title="Assign Role" %}
+
+<script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}
